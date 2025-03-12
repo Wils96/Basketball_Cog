@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wheelchair Basketball - Scenario</title>
+</head>
+<body>
+    <h1>Scenario {{ scenario_index + 1 }}</h1>
+    <p>{{ scenario.description }}</p>
+
+    <form action="{{ url_for('game_bp.choose_action') }}" method="POST">
+        <label for="choice">Choose your action:</label>
+        <select name="choice" id="choice">
+            {% for action, outcome_data in scenario.choices.items() %}
+                <option value="{{ action }}">{{ action | capitalize }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
