@@ -1,6 +1,12 @@
 # game/core/game_logic.py
 
 import pygame
+from enum import Enum
+
+class GameState(Enum):
+    PLAYING = 1
+    PAUSED = 2
+    GAME_OVER = 3
 
 class Scenario:
     """
@@ -12,15 +18,14 @@ class Scenario:
         self.callback = callback                    # function to call when triggered
         self.has_triggered = False                  # ensure one-time activation per entry
 
-    def try_trigger(self, player_rect: pygame.Rect):
+    def try_trigger(self, player_rect: pygame.Rect, game_state):
         """
         If the player enters the trigger_zone for the first time,
-        call the associated callback.
+        call the associated callback if the game is in PLAYING state.
         """
-        if not self.has_triggered and self.trigger_zone.colliderect(player_rect):
+        if game_state == GameState.PLAYING and not self.has_triggered and self.trigger_zone.colliderect(player_rect):
             self.has_triggered = True
             self.callback(self)
-            
 
 class GameLogic:
     """
@@ -29,6 +34,8 @@ class GameLogic:
     def __init__(self):
         self.scenarios = self._load_scenarios()
         self.score = 0
+        self.game_state = GameState.PLAYING
+        self.timer = 0  # example timer for a scenario or game phase
 
     def _load_scenarios(self):
         # Define trigger zones and their callbacks
@@ -48,32 +55,38 @@ class GameLogic:
                 trigger_zone=pygame.Rect(400, 500, 200, 100),
                 callback=self._on_rebound_challenge
             ),
-            # ... add more scenarios here
+            # ... add more scenarios here as needed
         ]
 
     def update(self, player_rect: pygame.Rect):
         """
         Call once per frame with the player's current bounding rect.
         """
-        for scenario in self.scenarios:
-            scenario.try_trigger(player_rect)
+        # Example: update a timer (could be used in a scenario)
+        self.timer += 1
 
+        for scenario in self.scenarios:
+            scenario.try_trigger(player_rect, self.game_state)
+    
     # --- Scenario callbacks below ---
     def _on_fast_break(self, scenario: Scenario):
         """
         Called when the player enters the fast break zone.
-        You might spawn defenders, start a timer, etc.
+        You might spawn defenders, start a timer, adjust score, etc.
         """
         print("[Fast Break] You’ve hit open court! Drive to the basket!")
-        # e.g. self.spawn_defenders(), start timer, highlight court, etc.
+        # Example: spawn defenders or impact physics elsewhere.
+        self.score += 10
 
     def _on_pass_under_pressure(self, scenario: Scenario):
         print("[Pressure] Defender closing in — choose to pass or drive!")
-        # e.g. slow player speed, flash UI options, enable pass key
+        # Example: change game state or reduce player speed.
+        self.score += 5
 
     def _on_rebound_challenge(self, scenario: Scenario):
         print("[Rebound] Ball is loose! Fight for position!")
-        # e.g. drop ball sprite, enable grip controls, track rebound outcome
+        # Example: update ball physics or add a mini-game challenge.
+        self.score += 8
 
-    # You can add more callbacks for different scenarios,
-    # each manipulating the game state, UI, sprites, and self.score as needed.
+    # Additional methods can include resetting scenarios,
+    # handling transitions between game states, or advanced physics interactions

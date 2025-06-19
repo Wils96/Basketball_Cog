@@ -16,10 +16,10 @@ def create_app():
 
     @app.route('/')
     def index():
-        return "Welcome to the Wheelchair Basketball Decision Game (Admin & Game Routes Available)"
+        return "Welcome to the Wheelchair Basketball Game!"
 
     return app
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
