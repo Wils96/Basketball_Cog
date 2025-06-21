@@ -1,7 +1,8 @@
 import pygame
 from game_logic import GameLogic
-from player import Player
-from ball import Ball
+from Player_sprite import Player
+jls_extract_var = Ball_sprite
+from jls_extract_var import Ball
 
 def main():
     pygame.init()

@@ -3,19 +3,19 @@ import pygame
 # A gravity constant for our simulation
 GRAVITY = 0.5
 
+# filepath: /Users/sarahwilson/Desktop/Repos/Basketball_Cog/basketball/app/game/Ball_sprite.py
+import pygame
+
 class Ball(pygame.sprite.Sprite):
     def __init__(self, position, velocity):
         super().__init__()
-        # Create a circular ball with transparency support
-        self.image = pygame.Surface((20, 20), pygame.SRCALPHA)
-        pygame.draw.circle(self.image, (255, 255, 255), (10, 10), 10)
+        # Load your basketball image
+        self.image = pygame.image.load("assets/basketball.png").convert_alpha()
         self.rect = self.image.get_rect(center=position)
-        # Velocity is a list: [x_velocity, y_velocity]
         self.velocity = list(velocity)
 
     def update(self):
-        # Apply gravity
-        self.velocity[1] += GRAVITY
+        self.velocity[1] += 0.5  # gravity example
         self.rect.x += int(self.velocity[0])
         self.rect.y += int(self.velocity[1])
         
